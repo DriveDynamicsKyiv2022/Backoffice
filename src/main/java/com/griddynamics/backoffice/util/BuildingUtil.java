@@ -4,13 +4,14 @@ import com.griddynamics.backoffice.dto.AreaDto;
 import com.griddynamics.backoffice.dto.TariffDto;
 import com.griddynamics.backoffice.model.Area;
 import com.griddynamics.backoffice.model.Tariff;
+import org.springframework.lang.Nullable;
 
 import java.util.UUID;
 
 public class BuildingUtil {
     public static TariffDto getDto(Tariff tariff) {
         return TariffDto.builder()
-                .id(tariff.getId())
+                .tariffId(tariff.getTariffId())
                 .name(tariff.getName())
                 .ratePerHour(tariff.getRatePerHour())
                 .carBodyStyle(tariff.getCarBodyStyle())
@@ -28,8 +29,9 @@ public class BuildingUtil {
     }
 
     public static Tariff getEntity(TariffDto tariffDto) {
+        String tariffId = getOrGenerateId(tariffDto.getTariffId());
         return Tariff.builder()
-                .id(tariffDto.getId())
+                .tariffId(tariffId)
                 .name(tariffDto.getName())
                 .ratePerHour(tariffDto.getRatePerHour())
                 .carBodyStyle(tariffDto.getCarBodyStyle())
@@ -38,12 +40,16 @@ public class BuildingUtil {
     }
 
     public static Area getEntity(AreaDto areaDto) {
-        String areaId = areaDto.getAreaId() == null ? UUID.randomUUID().toString() : areaDto.getAreaId();
+        String areaId = getOrGenerateId(areaDto.getAreaId());
         return Area.builder()
                 .areaId(areaId)
                 .country(areaDto.getCountry())
                 .city(areaDto.getCity())
                 .coordinates(areaDto.getCoordinates())
                 .build();
+    }
+
+    private static String getOrGenerateId(@Nullable String id) {
+        return id == null ? UUID.randomUUID().toString() : id;
     }
 }
