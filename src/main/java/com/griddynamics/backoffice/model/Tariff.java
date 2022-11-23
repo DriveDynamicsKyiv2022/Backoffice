@@ -8,27 +8,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
-@Entity
-@Table(name = "tariffs")
 @AllArgsConstructor()
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Builder
+@Document(collection = "tariffs")
 public class Tariff {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    public static final String ID_FIELD_NAME = "tariffId";
     @NonNull
-    private Long id;
+    private String tariffId;
     @NonNull
     @Setter
     private String name;
