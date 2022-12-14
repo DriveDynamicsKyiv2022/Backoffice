@@ -1,13 +1,12 @@
 package com.griddynamics.backoffice.service.tariff.impl;
 
 import com.griddynamics.backoffice.dao.tariff.ITariffDao;
-import com.griddynamics.backoffice.model.Tariff;
+import com.griddynamics.backoffice.model.impl.Tariff;
 import com.griddynamics.backoffice.service.tariff.ITariffService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class SimpleTariffService implements ITariffService {
@@ -24,7 +23,7 @@ public class SimpleTariffService implements ITariffService {
     }
 
     @Override
-    public List<Tariff> getTariffs(Pageable pageable) {
+    public Page<Tariff> getTariffs(Pageable pageable) {
         return tariffDao.findAll(pageable);
     }
 
@@ -34,8 +33,8 @@ public class SimpleTariffService implements ITariffService {
     }
 
     @Override
-    public Tariff updateTariff(String id, Tariff newTariff) {
-        return tariffDao.updateEntity(id, newTariff);
+    public Tariff updateTariff(Tariff newTariff) {
+        return tariffDao.updateEntity(newTariff);
     }
 
     @Override

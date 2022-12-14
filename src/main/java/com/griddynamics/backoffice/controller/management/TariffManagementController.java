@@ -1,9 +1,9 @@
 package com.griddynamics.backoffice.controller.management;
 
-import com.griddynamics.backoffice.dto.TariffDto;
-import com.griddynamics.backoffice.model.Tariff;
+import com.griddynamics.backoffice.model.impl.Tariff;
 import com.griddynamics.backoffice.service.tariff.ITariffService;
-import com.griddynamics.backoffice.util.BuildingUtil;
+import com.griddynamics.backoffice.util.BuildingUtils;
+import com.griddynamics.tariff.TariffDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,25 +27,25 @@ public class TariffManagementController {
     @GetMapping("/{id}")
     public TariffDto getTariff(@PathVariable String id) {
         Tariff tariff = tariffService.getTariff(id);
-        return BuildingUtil.getDto(tariff);
+        return BuildingUtils.getDto(tariff);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public boolean deleteTariff(@PathVariable String id) {
         return tariffService.deleteTariff(id);
     }
 
-    @PostMapping("/add")
+    @PostMapping
     public TariffDto createTariff(@RequestBody TariffDto tariffDto) {
-        Tariff tariff = BuildingUtil.getEntity(tariffDto);
+        Tariff tariff = BuildingUtils.getEntity(tariffDto);
         tariff = tariffService.addTariff(tariff);
-        return BuildingUtil.getDto(tariff);
+        return BuildingUtils.getDto(tariff);
     }
 
-    @PutMapping("/update/{id}")
-    public TariffDto updateTariff(@PathVariable String id, @RequestBody TariffDto tariffDto) {
-        Tariff tariff = BuildingUtil.getEntity(tariffDto);
-        tariff = tariffService.updateTariff(id, tariff);
-        return BuildingUtil.getDto(tariff);
+    @PutMapping
+    public TariffDto updateTariff(@RequestBody TariffDto tariffDto) {
+        Tariff tariff = BuildingUtils.getEntity(tariffDto);
+        tariff = tariffService.updateTariff(tariff);
+        return BuildingUtils.getDto(tariff);
     }
 }

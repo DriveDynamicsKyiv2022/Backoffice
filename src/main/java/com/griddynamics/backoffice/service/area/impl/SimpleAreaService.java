@@ -1,13 +1,12 @@
 package com.griddynamics.backoffice.service.area.impl;
 
 import com.griddynamics.backoffice.dao.area.IAreaDao;
-import com.griddynamics.backoffice.model.Area;
+import com.griddynamics.backoffice.model.impl.Area;
 import com.griddynamics.backoffice.service.area.IAreaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class SimpleAreaService implements IAreaService {
@@ -24,12 +23,12 @@ public class SimpleAreaService implements IAreaService {
     }
 
     @Override
-    public Area updateArea(String id, Area newArea) {
-        return areaDao.updateEntity(id, newArea);
+    public Area updateArea(Area newArea) {
+        return areaDao.updateEntity(newArea);
     }
 
     @Override
-    public List<Area> getAreas(Pageable pageable) {
+    public Page<Area> getAreas(Pageable pageable) {
         return areaDao.findAll(pageable);
     }
 

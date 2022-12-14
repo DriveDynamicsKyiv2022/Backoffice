@@ -1,10 +1,12 @@
 package com.griddynamics.backoffice.dao;
 
-public interface IReadWriteBaseDao<T> extends IReadonlyBaseDao<T> {
+import com.griddynamics.backoffice.model.IDocument;
+
+public interface IReadWriteBaseDao<T extends IDocument> extends IReadonlyBaseDao<T> {
     T save(T entity);
 
     boolean delete(String id);
 
-    T updateEntity(String id, T newEntity);
+    T updateEntity(T newEntity);
 
 }

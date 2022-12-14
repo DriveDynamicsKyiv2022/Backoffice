@@ -1,45 +1,53 @@
 package com.griddynamics.backoffice.dao.order.impl;
 
-import com.griddynamics.backoffice.dao.MongoReadonlyBaseDao;
+import com.griddynamics.backoffice.dao.ReadonlyBaseDaoMongo;
 import com.griddynamics.backoffice.dao.order.IOrderDao;
-import com.griddynamics.backoffice.model.Order;
-import com.griddynamics.backoffice.request.AbstractOrderRequest;
-import com.griddynamics.backoffice.request.ManagerOrderRequest;
-import com.griddynamics.backoffice.request.UserOrderRequest;
+import com.griddynamics.backoffice.model.impl.Order;
+import com.griddynamics.backoffice.util.CollectionUtils;
+import com.griddynamics.request.AbstractOrderFilteringRequest;
+import com.griddynamics.request.ManagerOrderFilteringRequest;
+import com.griddynamics.request.UserOrderFilteringRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-public class MongoOrderDao extends MongoReadonlyBaseDao<Order> implements IOrderDao {
+@Repository
+@Profile("local")
+public class OrderDaoMongo extends ReadonlyBaseDaoMongo<Order> implements IOrderDao {
     @Autowired
-    public MongoOrderDao(MongoTemplate mongoTemplate) {
+    public OrderDaoMongo(MongoTemplate mongoTemplate) {
         super(mongoTemplate, Order.class, "order");
     }
 
     @Override
-    public List<Order> getUserOrdersHistoryPaginated(UserOrderRequest userOrderRequest, Pageable pageable) {
+    public Page<Order> getUserOrdersHistoryPaginated(UserOrderFilteringRequest userOrderRequest, Pageable pageable) {
         Query query = new Query(Criteria.where("userId").is(userOrderRequest.getUserId()));
         Criteria criteria = configureCarAndDateCriteria(userOrderRequest);
         query.with(pageable).addCriteria(criteria);
-        return mongoTemplate.find(query, entityClass);
+        List<Order> orders = mongoTemplate.find(query, entityClass);
+        return new PageImpl<>(orders, pageable, getTotalCount(query));
     }
 
     @Override
-    public List<Order> getAllOrdersPaginated(ManagerOrderRequest managerOrderRequest, Pageable pageable) {
+    public Page<Order> getAllOrdersPaginated(ManagerOrderFilteringRequest managerOrderRequest, Pageable pageable) {
         Query query = new Query();
-        if (managerOrderRequest.getUserIds() != null) {
+        if (!CollectionUtils.isEmpty(managerOrderRequest.getUserIds())) {
             query.addCriteria(Criteria.where("userId").in(managerOrderRequest.getUserIds()));
         }
         Criteria carAndDateCriteria = configureCarAndDateCriteria(managerOrderRequest);
-        query.addCriteria(carAndDateCriteria).with(pageable);
-        return mongoTemplate.find(query, entityClass);
+        List<Order> orders = mongoTemplate.find(query, entityClass);
+        return new PageImpl<>(orders, pageable, getTotalCount(query));
     }
 
-    protected Criteria configureCarAndDateCriteria(AbstractOrderRequest orderRequest) {
+    protected Criteria configureCarAndDateCriteria(AbstractOrderFilteringRequest orderRequest) {
         Criteria criteria = new Criteria();
         if (orderRequest.getCarBodyStyle() != null) {
             criteria = criteria.and("carBodyStyle").is(orderRequest.getCarBodyStyle());
