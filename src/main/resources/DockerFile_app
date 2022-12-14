@@ -1,0 +1,4 @@
+FROM amazoncorretto:18
+VOLUME /tmp
+COPY /backoffice-0.0.1-SNAPHOT.jar /backoffice-0.0.1-SNAPHOT.jar
+CMD ["java", "-jar", "/backoffice-0.0.1-SNAPHOT.jar"]
