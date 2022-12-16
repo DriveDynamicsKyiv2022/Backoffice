@@ -10,6 +10,7 @@ import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.ItemCollection;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.griddynamics.backoffice.exception.PaginationException;
 import com.griddynamics.backoffice.model.IDocument;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -51,10 +52,14 @@ public abstract class ReadonlyBaseDaoDynamo<T extends IDocument> implements IRea
                 .withLimit(pageable.getPageSize() * (pageable.getPageNumber() + 1))
                 .withConsistentRead(false);
         PaginatedScanList<T> result = dynamoDBMapper.scan(entityClass, scanExpression);
+        int totalCount = dynamoDBMapper.count(entityClass, DEFAULT_DYNAMODB_SCAN_EXPRESSION);
+        if (!isValidPage(totalCount, pageable)) {
+            throw new PaginationException("No such page");
+        }
         List<T> entities = result.stream()
                 .filter(entity -> isWithinPage(result.indexOf(entity), pageable))
                 .toList();
-        return new PageImpl<>(entities, pageable, dynamoDBMapper.count(entityClass, DEFAULT_DYNAMODB_SCAN_EXPRESSION));
+        return new PageImpl<>(entities, pageable, totalCount);
     }
 
     @Override
@@ -69,10 +74,18 @@ public abstract class ReadonlyBaseDaoDynamo<T extends IDocument> implements IRea
     public Page<T> findByIndex(String indexName, Pageable pageable, Function<Index, ItemCollection<?>> itemCollectionFunction) {
         ItemCollection<?> itemCollection = itemCollectionFunction.apply(getIndex(indexName));
         List<Item> items = extractFromItemCollection(itemCollection);
+        int accumulatedItemCount = itemCollection.getAccumulatedItemCount();
+        if (!isValidPage(accumulatedItemCount, pageable)) {
+            throw new PaginationException("No such page");
+        }
         List<T> entities = items.stream()
                 .filter(item -> isWithinPage(items.indexOf(item), pageable))
                 .map(this::extractFromItem).toList();
-        return new PageImpl<>(entities, pageable, itemCollection.getAccumulatedItemCount());
+        return new PageImpl<>(entities, pageable, accumulatedItemCount);
+    }
+
+    private boolean isValidPage(int totalCount, Pageable pageable) {
+        return pageable.getPageNumber() * pageable.getPageSize() > totalCount;
     }
 
     private boolean isWithinPage(int index, Pageable pageable) {

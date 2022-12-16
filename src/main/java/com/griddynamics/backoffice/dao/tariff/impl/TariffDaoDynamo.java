@@ -5,6 +5,7 @@ import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.griddynamics.backoffice.dao.ReadWriteBaseDaoDynamo;
 import com.griddynamics.backoffice.dao.tariff.ITariffDao;
+import com.griddynamics.backoffice.exception.DatabaseException;
 import com.griddynamics.backoffice.model.impl.Tariff;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -20,7 +21,7 @@ public class TariffDaoDynamo extends ReadWriteBaseDaoDynamo<Tariff> implements I
 
     @Override
     public Tariff updateEntity(Tariff newEntity) {
-        Tariff tariff = find(newEntity.getTariffId());
+        Tariff tariff = super.find(newEntity.getTariffId());
         tariff.setName(newEntity.getName());
         tariff.setDescription(newEntity.getDescription());
         tariff.setCarBodyStyle(newEntity.getCarBodyStyle());
@@ -28,7 +29,7 @@ public class TariffDaoDynamo extends ReadWriteBaseDaoDynamo<Tariff> implements I
         dynamoDBMapper.save(tariff);
         Tariff updatedTariff = dynamoDBMapper.load(tariff);
         if (updatedTariff == null) {
-            throw new RuntimeException("Couldn't update tariff");
+            throw new DatabaseException("Couldn't update tariff");
         }
         return updatedTariff;
     }

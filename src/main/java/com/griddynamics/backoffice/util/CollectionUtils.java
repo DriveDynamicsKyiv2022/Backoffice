@@ -1,5 +1,7 @@
 package com.griddynamics.backoffice.util;
 
+import org.springframework.data.domain.Page;
+
 import java.util.Collection;
 
 public class CollectionUtils {

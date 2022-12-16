@@ -5,6 +5,7 @@ import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.griddynamics.backoffice.dao.ReadWriteBaseDaoDynamo;
 import com.griddynamics.backoffice.dao.area.IAreaDao;
+import com.griddynamics.backoffice.exception.DatabaseException;
 import com.griddynamics.backoffice.model.impl.Area;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -20,14 +21,14 @@ public class AreaDaoDynamo extends ReadWriteBaseDaoDynamo<Area> implements IArea
 
     @Override
     public Area updateEntity(Area newEntity) {
-        Area area = find(newEntity.getAreaId());
+        Area area = super.find(newEntity.getAreaId());
         area.setCoordinates(newEntity.getCoordinates());
         area.setCity(newEntity.getCity());
         area.setCountry(newEntity.getCountry());
         dynamoDBMapper.save(area);
         Area updatedArea = dynamoDBMapper.load(area);
         if (updatedArea == null) {
-            throw new RuntimeException("couldn't save area");
+            throw new DatabaseException("couldn't save area");
         }
         return updatedArea;
     }

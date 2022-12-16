@@ -1,10 +1,14 @@
 package com.griddynamics.backoffice.controller.management;
 
 import com.griddynamics.backoffice.model.impl.Tariff;
+import com.griddynamics.backoffice.response.SimpleResponse;
 import com.griddynamics.backoffice.service.tariff.ITariffService;
 import com.griddynamics.backoffice.util.BuildingUtils;
+import com.griddynamics.backoffice.util.RestUtils;
 import com.griddynamics.tariff.TariffDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +17,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/manager/tariff")
@@ -31,20 +38,23 @@ public class TariffManagementController {
     }
 
     @DeleteMapping("/{id}")
-    public boolean deleteTariff(@PathVariable String id) {
-        return tariffService.deleteTariff(id);
+    public ResponseEntity<SimpleResponse> deleteTariff(@PathVariable String id) {
+        tariffService.deleteTariff(id);
+        return new ResponseEntity<>(SimpleResponse.of("Area deleted"), HttpStatus.OK);
     }
 
     @PostMapping
-    public TariffDto createTariff(@RequestBody TariffDto tariffDto) {
+    public ResponseEntity<TariffDto> createTariff(@RequestBody TariffDto tariffDto, UriComponentsBuilder uriComponentsBuilder) {
         Tariff tariff = BuildingUtils.getEntity(tariffDto);
         tariff = tariffService.addTariff(tariff);
-        return BuildingUtils.getDto(tariff);
+        TariffDto dto = BuildingUtils.getDto(tariff);
+        URI uri = RestUtils.buildUri(uriComponentsBuilder, "manager", "tariff", tariff.getTariffId());
+        return ResponseEntity.created(uri).body(dto);
     }
 
-    @PutMapping
-    public TariffDto updateTariff(@RequestBody TariffDto tariffDto) {
-        Tariff tariff = BuildingUtils.getEntity(tariffDto);
+    @PutMapping("/{id}")
+    public TariffDto updateTariff(@RequestBody TariffDto tariffDto, @PathVariable String id) {
+        Tariff tariff = BuildingUtils.getEntity(tariffDto, id);
         tariff = tariffService.updateTariff(tariff);
         return BuildingUtils.getDto(tariff);
     }

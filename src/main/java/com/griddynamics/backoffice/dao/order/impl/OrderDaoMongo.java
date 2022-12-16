@@ -2,6 +2,7 @@ package com.griddynamics.backoffice.dao.order.impl;
 
 import com.griddynamics.backoffice.dao.ReadonlyBaseDaoMongo;
 import com.griddynamics.backoffice.dao.order.IOrderDao;
+import com.griddynamics.backoffice.exception.PaginationException;
 import com.griddynamics.backoffice.model.impl.Order;
 import com.griddynamics.backoffice.util.CollectionUtils;
 import com.griddynamics.request.AbstractOrderFilteringRequest;
@@ -33,7 +34,11 @@ public class OrderDaoMongo extends ReadonlyBaseDaoMongo<Order> implements IOrder
         Criteria criteria = configureCarAndDateCriteria(userOrderRequest);
         query.with(pageable).addCriteria(criteria);
         List<Order> orders = mongoTemplate.find(query, entityClass);
-        return new PageImpl<>(orders, pageable, getTotalCount(query));
+        PageImpl<Order> page = new PageImpl<Order>(orders, pageable, getTotalCount(query));
+        if (!super.validatePage(page)) {
+            throw new PaginationException("No such page");
+        }
+        return page;
     }
 
     @Override
@@ -43,8 +48,13 @@ public class OrderDaoMongo extends ReadonlyBaseDaoMongo<Order> implements IOrder
             query.addCriteria(Criteria.where("userId").in(managerOrderRequest.getUserIds()));
         }
         Criteria carAndDateCriteria = configureCarAndDateCriteria(managerOrderRequest);
+        query.addCriteria(carAndDateCriteria);
         List<Order> orders = mongoTemplate.find(query, entityClass);
-        return new PageImpl<>(orders, pageable, getTotalCount(query));
+        PageImpl<Order> page = new PageImpl<Order>(orders, pageable, getTotalCount(query));
+        if (!super.validatePage(page)) {
+            throw new PaginationException("No such page");
+        }
+        return page;
     }
 
     protected Criteria configureCarAndDateCriteria(AbstractOrderFilteringRequest orderRequest) {

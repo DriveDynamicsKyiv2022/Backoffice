@@ -46,32 +46,32 @@ public class BuildingUtils {
 
 
     public static Tariff getEntity(TariffDto tariffDto) {
-        try {
-            String tariffId = getOrGenerateId(tariffDto.getTariffId());
-            return Tariff.builder()
-                    .tariffId(tariffId)
-                    .name(tariffDto.getName())
-                    .ratePerHour(tariffDto.getRatePerHour())
-                    .carBodyStyle(tariffDto.getCarBodyStyle())
-                    .description(tariffDto.getDescription())
-                    .build();
-        } catch (NullPointerException e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
+        String tariffId = getOrGenerateId(tariffDto.getTariffId());
+        return getEntity(tariffDto, tariffId);
+    }
+
+    public static Tariff getEntity(TariffDto tariffDto, String id) {
+        return Tariff.builder()
+                .tariffId(id)
+                .name(tariffDto.getName())
+                .ratePerHour(tariffDto.getRatePerHour())
+                .carBodyStyle(tariffDto.getCarBodyStyle())
+                .description(tariffDto.getDescription())
+                .build();
     }
 
     public static Area getEntity(AreaDto areaDto) {
-        try {
-            String areaId = getOrGenerateId(areaDto.getAreaId());
-            return Area.builder()
-                    .areaId(areaId)
-                    .country(areaDto.getCountry())
-                    .city(areaDto.getCity())
-                    .coordinates(areaDto.getCoordinates())
-                    .build();
-        } catch (NullPointerException e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
+        String areaId = getOrGenerateId(areaDto.getAreaId());
+        return getEntity(areaDto, areaId);
+    }
+
+    public static Area getEntity(AreaDto areaDto, String id) {
+        return Area.builder()
+                .areaId(id)
+                .country(areaDto.getCountry())
+                .city(areaDto.getCity())
+                .coordinates(areaDto.getCoordinates())
+                .build();
     }
 
     private static String getOrGenerateId(@Nullable String id) {
