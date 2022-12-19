@@ -11,6 +11,7 @@ import com.amazonaws.services.dynamodbv2.document.ItemCollection;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.griddynamics.backoffice.exception.PaginationException;
+import com.griddynamics.backoffice.exception.ResourceNotFoundException;
 import com.griddynamics.backoffice.model.IDocument;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -66,7 +67,7 @@ public abstract class ReadonlyBaseDaoDynamo<T extends IDocument> implements IRea
     public T find(String id) {
         T entity = dynamoDBMapper.load(entityClass, id);
         if (entity == null) {
-            throw new IllegalArgumentException("no such " + entityName);
+            throw new ResourceNotFoundException("No such " + entityName);
         }
         return entity;
     }
@@ -85,7 +86,7 @@ public abstract class ReadonlyBaseDaoDynamo<T extends IDocument> implements IRea
     }
 
     private boolean isValidPage(int totalCount, Pageable pageable) {
-        return pageable.getPageNumber() * pageable.getPageSize() > totalCount;
+        return pageable.getPageNumber() * pageable.getPageSize() < totalCount;
     }
 
     private boolean isWithinPage(int index, Pageable pageable) {

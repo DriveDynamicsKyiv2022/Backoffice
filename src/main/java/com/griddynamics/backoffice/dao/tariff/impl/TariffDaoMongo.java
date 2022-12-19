@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@Profile("local")
+@Profile("!local")
 public class TariffDaoMongo extends ReadWriteBaseDaoMongo<Tariff> implements ITariffDao {
     @Autowired
     public TariffDaoMongo(MongoTemplate mongoTemplate) {

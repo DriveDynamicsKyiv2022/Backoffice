@@ -1,4 +1,4 @@
-package com.griddynamics.backoffice.controller.management;
+package com.griddynamics.backoffice.controller;
 
 import com.griddynamics.backoffice.model.impl.Tariff;
 import com.griddynamics.backoffice.response.SimpleResponse;
@@ -22,7 +22,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/manager/tariff")
+@RequestMapping("/tariff")
 public class TariffManagementController {
     private final ITariffService tariffService;
 
@@ -48,7 +48,7 @@ public class TariffManagementController {
         Tariff tariff = BuildingUtils.getEntity(tariffDto);
         tariff = tariffService.addTariff(tariff);
         TariffDto dto = BuildingUtils.getDto(tariff);
-        URI uri = RestUtils.buildUri(uriComponentsBuilder, "manager", "tariff", tariff.getTariffId());
+        URI uri = RestUtils.buildUri(uriComponentsBuilder, "tariff", tariff.getTariffId());
         return ResponseEntity.created(uri).body(dto);
     }
 

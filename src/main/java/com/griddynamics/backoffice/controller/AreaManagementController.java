@@ -1,4 +1,4 @@
-package com.griddynamics.backoffice.controller.management;
+package com.griddynamics.backoffice.controller;
 
 import com.griddynamics.area.AreaDto;
 import com.griddynamics.backoffice.model.impl.Area;
