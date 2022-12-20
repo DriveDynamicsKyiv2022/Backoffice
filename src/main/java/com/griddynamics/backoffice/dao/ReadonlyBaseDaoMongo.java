@@ -2,8 +2,8 @@ package com.griddynamics.backoffice.dao;
 
 import com.griddynamics.backoffice.exception.DatabaseException;
 import com.griddynamics.backoffice.exception.PaginationException;
+import com.griddynamics.backoffice.exception.ResourceNotFoundException;
 import com.griddynamics.backoffice.model.IDocument;
-import com.griddynamics.backoffice.util.CollectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -60,7 +60,7 @@ public abstract class ReadonlyBaseDaoMongo<T extends IDocument> implements IRead
 
     protected void checkIfExistsOrThrowException(Query query) {
         if (!mongoTemplate.exists(query, entityClass)) {
-            throw new IllegalArgumentException(String.format("No such %s", entityName));
+            throw new ResourceNotFoundException(String.format("No such %s", entityName));
         }
     }
 

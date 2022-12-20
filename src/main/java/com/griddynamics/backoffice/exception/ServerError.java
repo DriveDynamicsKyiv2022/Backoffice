@@ -13,4 +13,5 @@ public class ServerError {
     private int code;
     private long timestamp;
     private String message;
+    private String path;
 }

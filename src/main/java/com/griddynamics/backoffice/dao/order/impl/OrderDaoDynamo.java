@@ -48,14 +48,19 @@ public class OrderDaoDynamo extends ReadonlyBaseDaoDynamo<Order> implements IOrd
     @Override
     public Page<Order> getAllOrdersPaginated(ManagerOrderFilteringRequest managerOrderRequest, Pageable pageable) {
         ValueMap valueMap = new ValueMap();
+        String filterExpression = Strings.EMPTY;
         if (managerOrderRequest.getUserIds() != null) {
             valueMap.withList(":userIds", managerOrderRequest.getUserIds());
+            filterExpression = "userId IN (:userIds)";
         }
-        String filterExpression = DynamoDbUtils.appendFilterExpression("userId IN (:userIds)",
+        filterExpression = DynamoDbUtils.appendFilterExpression(filterExpression,
                 generateFilterExpressionAndFillValueMap(managerOrderRequest, valueMap), "AND");
-        ScanSpec scanSpec = new ScanSpec()
-                .withFilterExpression(filterExpression)
-                .withValueMap(valueMap);
+        ScanSpec scanSpec = new ScanSpec();
+        if (!filterExpression.isEmpty()) {
+            scanSpec.withFilterExpression(filterExpression)
+                    .withValueMap(valueMap);
+        }
+
         return super.findByIndex(Order.userIdIndexName, pageable, index -> index.scan(scanSpec));
     }
 

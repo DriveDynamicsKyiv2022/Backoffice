@@ -1,4 +1,4 @@
-package com.griddynamics.backoffice.controller.management;
+package com.griddynamics.backoffice.controller;
 
 import com.griddynamics.area.AreaDto;
 import com.griddynamics.backoffice.model.impl.Area;
@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.net.URI;
 
 @RestController
 @RequestMapping("/area")
@@ -36,7 +37,7 @@ public class AreaManagementController {
         Area area = BuildingUtils.getEntity(areaDto);
         area = areaService.addArea(area);
         AreaDto receivedArea = BuildingUtils.getDto(area);
-        var responseUri = RestUtils.buildUri(uriComponentsBuilder, "area", receivedArea.getAreaId());
+        URI responseUri = RestUtils.buildUri(uriComponentsBuilder, "area", receivedArea.getAreaId());
         return ResponseEntity.created(responseUri)
                 .body(receivedArea);
     }
