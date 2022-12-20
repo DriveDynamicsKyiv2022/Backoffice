@@ -25,6 +25,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("orders")
@@ -45,7 +46,7 @@ public class OrdersController {
                                                            Long... userIds) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         ManagerOrderFilteringRequest orderFilteringRequest = ManagerOrderFilteringRequest.builder()
-                .userIds(userIds == null ? null : Arrays.stream(userIds).toList())
+                .userIds(userIds == null ? null : Arrays.stream(userIds).collect(Collectors.toList()))
                 .carBodyStyle(carBodyStyle)
                 .startDate(startDate)
                 .endDate(endDate)

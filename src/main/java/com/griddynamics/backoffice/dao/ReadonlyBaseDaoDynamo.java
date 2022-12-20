@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public abstract class ReadonlyBaseDaoDynamo<T extends IDocument> implements IReadonlyBaseDao<T> {
     public static final DynamoDBScanExpression DEFAULT_DYNAMODB_SCAN_EXPRESSION = new DynamoDBScanExpression().withConsistentRead(false);
@@ -59,7 +60,7 @@ public abstract class ReadonlyBaseDaoDynamo<T extends IDocument> implements IRea
         }
         List<T> entities = result.stream()
                 .filter(entity -> isWithinPage(result.indexOf(entity), pageable))
-                .toList();
+                .collect(Collectors.toList());
         return new PageImpl<>(entities, pageable, totalCount);
     }
 
@@ -81,7 +82,7 @@ public abstract class ReadonlyBaseDaoDynamo<T extends IDocument> implements IRea
         }
         List<T> entities = items.stream()
                 .filter(item -> isWithinPage(items.indexOf(item), pageable))
-                .map(this::extractFromItem).toList();
+                .map(this::extractFromItem).collect(Collectors.toList());
         return new PageImpl<>(entities, pageable, accumulatedItemCount);
     }
 

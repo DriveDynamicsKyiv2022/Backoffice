@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.griddynamics.coordinates.Coordinates;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CoordinatesListConverter implements DynamoDBTypeConverter<List<String>, List<Coordinates>> {
     private final ObjectMapper objectMapper;
@@ -22,7 +23,7 @@ public class CoordinatesListConverter implements DynamoDBTypeConverter<List<Stri
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
-        }).toList();
+        }).collect(Collectors.toList());
     }
 
     @Override
@@ -33,6 +34,6 @@ public class CoordinatesListConverter implements DynamoDBTypeConverter<List<Stri
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
-        }).toList();
+        }).collect(Collectors.toList());
     }
 }
