@@ -21,7 +21,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-@Profile("!local")
+@Profile("local")
 public class OrderDaoMongo extends ReadonlyBaseDaoMongo<Order> implements IOrderDao {
     @Autowired
     public OrderDaoMongo(MongoTemplate mongoTemplate) {

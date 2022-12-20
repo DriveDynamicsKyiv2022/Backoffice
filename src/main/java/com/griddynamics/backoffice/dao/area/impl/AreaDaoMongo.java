@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@Profile("!local")
+@Profile("local")
 public class AreaDaoMongo extends ReadWriteBaseDaoMongo<Area> implements IAreaDao {
     @Autowired
     public AreaDaoMongo(MongoTemplate mongoTemplate) {

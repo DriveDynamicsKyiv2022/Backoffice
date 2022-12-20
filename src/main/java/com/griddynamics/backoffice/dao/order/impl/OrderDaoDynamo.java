@@ -21,7 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@Profile("local")
+@Profile("!local")
 public class OrderDaoDynamo extends ReadonlyBaseDaoDynamo<Order> implements IOrderDao {
 
     @Autowired

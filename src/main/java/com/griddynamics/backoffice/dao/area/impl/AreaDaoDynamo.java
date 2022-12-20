@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@Profile("local")
+@Profile("!local")
 public class AreaDaoDynamo extends ReadWriteBaseDaoDynamo<Area> implements IAreaDao {
     @Autowired
     public AreaDaoDynamo(DynamoDBMapper dynamoDBMapper, DynamoDB dynamoDB, ObjectMapper objectMapper) {
