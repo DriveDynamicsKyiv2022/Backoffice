@@ -11,10 +11,9 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Deploying....'
-                sh 'sudo su'
-                sh 'scp -v -o StrictHostKeyChecking=no -i ~/backoffice-bastion-key-pair-personal.pem target/backoffice-0.0.1-SNAPSHOT.jar src/main/resources/docker-compose.yml ' +
+                sh 'sudo scp -v -o StrictHostKeyChecking=no -i ~/backoffice-bastion-key-pair-personal.pem target/backoffice-0.0.1-SNAPSHOT.jar src/main/resources/docker-compose.yml ' +
                         'src/main/resources/DockerFile_app ubuntu@ec2-52-59-255-130.eu-central-1.compute.amazonaws.com:~'
-                sh 'ssh -i ~/backoffice-bastion-key-pair-personal.pem ubuntu@ec2-52-59-255-130.eu-central-1.compute.amazonaws.com'
+                sh 'sudo ssh -i ~/backoffice-bastion-key-pair-personal.pem ubuntu@ec2-52-59-255-130.eu-central-1.compute.amazonaws.com'
                 sh 'sudo su'
                 sh 'for container_id in $(docker ps -a);' +
                         'do docker kill $container_id;' +
