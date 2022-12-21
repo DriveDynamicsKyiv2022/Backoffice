@@ -1,7 +1,7 @@
 #!/bin/bash
 ls -la
 sudo su
-for container_id in $(docker ps -a); do
+for container_id in $(docker ps -q); do
   echo "$container_id"
   docker kill "$container_id"
 done
