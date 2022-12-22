@@ -6,6 +6,9 @@ public class DynamoDbUtils {
         if (filterExpression == null || filterExpression.isEmpty()) {
             return expressionToAppend;
         }
+        if (expressionToAppend == null || expressionToAppend.isEmpty()) {
+            return expressionToAppend;
+        }
         return String.format("%s %s %s", filterExpression, logicalOperator, expressionToAppend);
     }
 }
