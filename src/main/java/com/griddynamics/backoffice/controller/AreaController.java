@@ -29,7 +29,7 @@ public class AreaController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<AreaDto>> getAreas(int pageNumber, int pageSize, UriComponentsBuilder uriComponentsBuilder) {
+    public ResponseEntity<Page<AreaDto>> getAreas(Integer pageNumber, Integer pageSize, UriComponentsBuilder uriComponentsBuilder) {
         if (VariablesUtils.isNull(pageNumber, pageSize)) {
             throw new PaginationException("Page parameters must be specified");
         }
