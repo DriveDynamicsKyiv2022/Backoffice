@@ -24,7 +24,7 @@ import java.time.ZoneOffset;
 import java.util.List;
 
 @Repository
-@Profile("local")
+@Profile("!local")
 public class OrderDaoDynamo extends ReadonlyBaseDaoDynamo<Order> implements IOrderDao {
 
     @Autowired
