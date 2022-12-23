@@ -29,7 +29,7 @@ public class TariffController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<TariffDto>> getTariffs(Integer pageNumber, Integer pageSize, UriComponentsBuilder uriComponentsBuilder) {
+    public ResponseEntity<Page<TariffDto>> getTariffs(int pageNumber, int pageSize, UriComponentsBuilder uriComponentsBuilder) {
         if (VariablesUtils.isNull(pageNumber, pageSize)) {
             throw new PaginationException("Page parameters must be specified");
         }

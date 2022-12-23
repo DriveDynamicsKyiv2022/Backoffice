@@ -38,7 +38,7 @@ public class OrdersController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<OrderDto>> getOrdersHistory(Integer pageNumber, Integer pageSize,
+    public ResponseEntity<Page<OrderDto>> getOrdersHistory(int pageNumber, int pageSize,
                                                            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
                                                            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
                                                            CarBodyStyle carBodyStyle,
@@ -60,7 +60,7 @@ public class OrdersController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Page<OrderDto>> getUserOrdersHistory(Integer pageNumber, Integer pageSize,
+    public ResponseEntity<Page<OrderDto>> getUserOrdersHistory(int pageNumber, int pageSize,
                                                                @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
                                                                @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
                                                                CarBodyStyle carBodyStyle, @PathVariable long userId,
