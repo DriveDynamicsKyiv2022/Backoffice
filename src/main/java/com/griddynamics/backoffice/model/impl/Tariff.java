@@ -18,7 +18,7 @@ import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @AllArgsConstructor()
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Builder
 @Getter
 @Setter

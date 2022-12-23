@@ -20,8 +20,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.time.ZoneOffset;
+import java.util.List;
+
 @Repository
-@Profile("!local")
+@Profile("local")
 public class OrderDaoDynamo extends ReadonlyBaseDaoDynamo<Order> implements IOrderDao {
 
     @Autowired
@@ -50,8 +53,8 @@ public class OrderDaoDynamo extends ReadonlyBaseDaoDynamo<Order> implements IOrd
         ValueMap valueMap = new ValueMap();
         String filterExpression = Strings.EMPTY;
         if (managerOrderRequest.getUserIds() != null) {
-            valueMap.withList(":userIds", managerOrderRequest.getUserIds());
-            filterExpression = "userId IN (:userIds)";
+            valueMap = buildValueMap(managerOrderRequest.getUserIds());
+            filterExpression = buildMultipleUsersFilterExpression(managerOrderRequest.getUserIds());
         }
         filterExpression = DynamoDbUtils.appendFilterExpression(filterExpression,
                 generateFilterExpressionAndFillValueMap(managerOrderRequest, valueMap), "AND");
@@ -64,6 +67,22 @@ public class OrderDaoDynamo extends ReadonlyBaseDaoDynamo<Order> implements IOrd
         return super.findByIndex(Order.userIdIndexName, pageable, index -> index.scan(scanSpec));
     }
 
+    private String buildMultipleUsersFilterExpression(List<Long> userIds) {
+        StringBuilder builder = new StringBuilder();
+        for (Long id : userIds) {
+            builder.append(":user").append(id).append(",");
+        }
+        return "userId IN (" + builder.toString().substring(0, builder.length() - 1) + ")";
+    }
+
+    private ValueMap buildValueMap(List<Long> userIds) {
+        ValueMap valueMap = new ValueMap();
+        for (Long id : userIds) {
+            valueMap.withNumber(":user" + id, id);
+        }
+        return valueMap;
+    }
+
 
     private String generateFilterExpressionAndFillValueMap(AbstractOrderFilteringRequest orderRequest, ValueMap valueMap) {
         if (valueMap == null) {
@@ -73,12 +92,12 @@ public class OrderDaoDynamo extends ReadonlyBaseDaoDynamo<Order> implements IOrd
         if (orderRequest.getStartDate() != null) {
             filterExpression = DynamoDbUtils.appendFilterExpression(filterExpression, "startDateTimestamp >= :startDateTimestamp",
                     "AND");
-            valueMap.withLong(":startDateTimestamp", orderRequest.getStartDate().toEpochDay());
+            valueMap.withLong(":startDateTimestamp", orderRequest.getStartDate().atStartOfDay().toEpochSecond(ZoneOffset.UTC));
         }
         if (orderRequest.getEndDate() != null) {
             filterExpression = DynamoDbUtils.appendFilterExpression(filterExpression, "endDateTimestamp <= :endDateTimestamp",
                     "AND");
-            valueMap.withLong(":endDateTimestamp", orderRequest.getEndDate().toEpochDay());
+            valueMap.withLong(":endDateTimestamp", orderRequest.getEndDate().atStartOfDay().toEpochSecond(ZoneOffset.UTC));
         }
         if (orderRequest.getCarBodyStyle() != null) {
             filterExpression = DynamoDbUtils.appendFilterExpression(filterExpression, "carBodyStyle = :carBodyStyle",

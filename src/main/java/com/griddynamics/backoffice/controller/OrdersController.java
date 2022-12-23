@@ -59,11 +59,11 @@ public class OrdersController {
         return new ResponseEntity<>(orderDtos, headers, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{userId}")
     public ResponseEntity<Page<OrderDto>> getUserOrdersHistory(Integer pageNumber, Integer pageSize,
                                                                @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
                                                                @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
-                                                               CarBodyStyle carBodyStyle, @PathVariable long userId,
+                                                               CarBodyStyle carBodyStyle, @PathVariable(name = "userId") long userId,
                                                                UriComponentsBuilder uriComponentsBuilder) {
         if (VariablesUtils.isNull(pageNumber, pageSize)) {
             throw new PaginationException("Page parameters must be specified");
