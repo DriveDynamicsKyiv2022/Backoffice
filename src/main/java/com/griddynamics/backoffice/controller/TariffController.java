@@ -1,8 +1,10 @@
 package com.griddynamics.backoffice.controller;
 
+import com.griddynamics.backoffice.exception.PaginationException;
 import com.griddynamics.backoffice.service.tariff.ITariffService;
 import com.griddynamics.backoffice.util.BuildingUtils;
 import com.griddynamics.backoffice.util.RestUtils;
+import com.griddynamics.backoffice.util.VariablesUtils;
 import com.griddynamics.tariff.TariffDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,7 +29,10 @@ public class TariffController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<TariffDto>> getTariffs(int pageNumber, int pageSize, UriComponentsBuilder uriComponentsBuilder) {
+    public ResponseEntity<Page<TariffDto>> getTariffs(Integer pageNumber, Integer pageSize, UriComponentsBuilder uriComponentsBuilder) {
+        if (VariablesUtils.isNull(pageNumber, pageSize)) {
+            throw new PaginationException("Page parameters must be specified");
+        }
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Page<TariffDto> tariffDtos = tariffService.getTariffs(pageable).map(BuildingUtils::getDto);
         MultiValueMap<String, String> headers = RestUtils.configureHttpHeadersForPage(tariffDtos, uriComponentsBuilder, "tariffs");

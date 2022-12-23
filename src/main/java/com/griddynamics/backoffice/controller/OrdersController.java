@@ -1,8 +1,10 @@
 package com.griddynamics.backoffice.controller;
 
+import com.griddynamics.backoffice.exception.PaginationException;
 import com.griddynamics.backoffice.service.order.IOrderReadonlyService;
 import com.griddynamics.backoffice.util.BuildingUtils;
 import com.griddynamics.backoffice.util.RestUtils;
+import com.griddynamics.backoffice.util.VariablesUtils;
 import com.griddynamics.car.enums.CarBodyStyle;
 import com.griddynamics.order.OrderDto;
 import com.griddynamics.request.ManagerOrderFilteringRequest;
@@ -22,9 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -38,12 +38,15 @@ public class OrdersController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<OrderDto>> getOrdersHistory(int pageNumber, int pageSize,
+    public ResponseEntity<Page<OrderDto>> getOrdersHistory(Integer pageNumber, Integer pageSize,
                                                            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
                                                            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
                                                            CarBodyStyle carBodyStyle,
                                                            UriComponentsBuilder uriComponentsBuilder,
                                                            Long... userIds) {
+        if (VariablesUtils.isNull(pageNumber, pageSize)) {
+            throw new PaginationException("Page parameters must be specified");
+        }
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         ManagerOrderFilteringRequest orderFilteringRequest = ManagerOrderFilteringRequest.builder()
                 .userIds(userIds == null ? null : Arrays.stream(userIds).collect(Collectors.toList()))
@@ -57,11 +60,14 @@ public class OrdersController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Page<OrderDto>> getUserOrdersHistory(int pageNumber, int pageSize,
+    public ResponseEntity<Page<OrderDto>> getUserOrdersHistory(Integer pageNumber, Integer pageSize,
                                                                @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
                                                                @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
                                                                CarBodyStyle carBodyStyle, @PathVariable long userId,
                                                                UriComponentsBuilder uriComponentsBuilder) {
+        if (VariablesUtils.isNull(pageNumber, pageSize)) {
+            throw new PaginationException("Page parameters must be specified");
+        }
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         UserOrderFilteringRequest orderFilteringRequest = UserOrderFilteringRequest.builder()
                 .userId(userId)
