@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -44,7 +45,7 @@ public class TariffManagementController {
     }
 
     @PostMapping
-    public ResponseEntity<TariffDto> createTariff(@RequestBody TariffDto tariffDto, UriComponentsBuilder uriComponentsBuilder) {
+    public ResponseEntity<TariffDto> createTariff(@RequestBody @Valid TariffDto tariffDto, UriComponentsBuilder uriComponentsBuilder) {
         Tariff tariff = BuildingUtils.getEntity(tariffDto);
         tariff = tariffService.addTariff(tariff);
         TariffDto dto = BuildingUtils.getDto(tariff);
@@ -53,7 +54,7 @@ public class TariffManagementController {
     }
 
     @PutMapping("/{id}")
-    public TariffDto updateTariff(@RequestBody TariffDto tariffDto, @PathVariable String id) {
+    public TariffDto updateTariff(@RequestBody @Valid TariffDto tariffDto, @PathVariable String id) {
         Tariff tariff = BuildingUtils.getEntity(tariffDto, id);
         tariff = tariffService.updateTariff(tariff);
         return BuildingUtils.getDto(tariff);
