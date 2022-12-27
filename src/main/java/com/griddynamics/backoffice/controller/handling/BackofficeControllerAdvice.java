@@ -22,6 +22,7 @@ import java.time.ZoneOffset;
 
 @ControllerAdvice
 public class BackofficeControllerAdvice extends ResponseEntityExceptionHandler {
+
     @ExceptionHandler(value = {IllegalArgumentException.class})
     protected ResponseEntity<Object> handleArgumentConflict(RuntimeException e, WebRequest request) {
         ServerError serverError = buildServerError(HttpStatus.BAD_REQUEST, e, request);
@@ -46,6 +47,8 @@ public class BackofficeControllerAdvice extends ResponseEntityExceptionHandler {
         ServerError serverError = buildServerError(status, ex, request);
         return buildResponseEntity(serverError);
     }
+
+
 
     private ServerError buildServerError(BackofficeException e, WebRequest webRequest) {
         return buildServerError(e.getHttpStatus(), e, webRequest);

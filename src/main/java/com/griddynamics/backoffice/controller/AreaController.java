@@ -1,10 +1,11 @@
 package com.griddynamics.backoffice.controller;
 
 import com.griddynamics.area.AreaDto;
-import com.griddynamics.backoffice.model.impl.Area;
+import com.griddynamics.backoffice.exception.PaginationException;
 import com.griddynamics.backoffice.service.area.IAreaService;
 import com.griddynamics.backoffice.util.BuildingUtils;
 import com.griddynamics.backoffice.util.RestUtils;
+import com.griddynamics.backoffice.util.VariablesUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,7 +29,10 @@ public class AreaController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<AreaDto>> getAreas(int pageNumber, int pageSize, UriComponentsBuilder uriComponentsBuilder) {
+    public ResponseEntity<Page<AreaDto>> getAreas(Integer pageNumber, Integer pageSize, UriComponentsBuilder uriComponentsBuilder) {
+        if (VariablesUtils.isNull(pageNumber, pageSize)) {
+            throw new PaginationException("Page parameters must be specified");
+        }
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Page<AreaDto> areaDtos = areaService.getAreas(pageable).map(BuildingUtils::getDto);
         MultiValueMap<String, String> headers = RestUtils.configureHttpHeadersForPage(areaDtos, uriComponentsBuilder, "areas");

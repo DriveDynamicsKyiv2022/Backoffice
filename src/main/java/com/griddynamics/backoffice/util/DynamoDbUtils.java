@@ -7,7 +7,7 @@ public class DynamoDbUtils {
             return expressionToAppend;
         }
         if (expressionToAppend == null || expressionToAppend.isEmpty()) {
-            return expressionToAppend;
+            return filterExpression;
         }
         return String.format("%s %s %s", filterExpression, logicalOperator, expressionToAppend);
     }
