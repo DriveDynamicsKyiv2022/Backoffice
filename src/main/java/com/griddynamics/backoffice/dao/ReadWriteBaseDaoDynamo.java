@@ -20,9 +20,6 @@ public abstract class ReadWriteBaseDaoDynamo<T extends IDocument> extends Readon
     @Override
     public boolean delete(String id) {
         T entity = find(id);
-        if (entity == null) {
-            return false;
-        }
         dynamoDBMapper.delete(entity);
         return true;
     }

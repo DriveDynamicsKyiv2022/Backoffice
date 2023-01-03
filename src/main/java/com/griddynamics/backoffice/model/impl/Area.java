@@ -11,6 +11,7 @@ import com.griddynamics.backoffice.model.IDocument;
 import com.griddynamics.coordinates.Coordinates;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -24,6 +25,7 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
+@EqualsAndHashCode
 @Document(collection = "areas")
 @DynamoDBTable(tableName = "areas")
 public class Area implements IDocument {

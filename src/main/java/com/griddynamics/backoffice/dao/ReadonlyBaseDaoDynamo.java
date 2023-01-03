@@ -8,6 +8,7 @@ import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Index;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.ItemCollection;
+import com.amazonaws.services.dynamodbv2.document.Table;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.griddynamics.backoffice.exception.PaginationException;
@@ -53,13 +54,14 @@ public abstract class ReadonlyBaseDaoDynamo<T extends IDocument> implements IRea
         DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
                 .withLimit(pageable.getPageSize() * (pageable.getPageNumber() + 1))
                 .withConsistentRead(false);
-        PaginatedScanList<T> result = dynamoDBMapper.scan(entityClass, scanExpression);
         int totalCount = dynamoDBMapper.count(entityClass, DEFAULT_DYNAMODB_SCAN_EXPRESSION);
         if (!isValidPage(totalCount, pageable)) {
             throw new PaginationException("No such page");
         }
-        List<T> entities = result.stream()
-                .filter(entity -> isWithinPage(result.indexOf(entity), pageable))
+        PaginatedScanList<T> result = dynamoDBMapper.scan(entityClass, scanExpression);
+        List<T> listedResult = result.stream().collect(Collectors.toList());
+        List<T> entities = listedResult.stream()
+                .filter(entity -> isWithinPage(listedResult.indexOf(entity), pageable))
                 .collect(Collectors.toList());
         return new PageImpl<>(entities, pageable, totalCount);
     }
@@ -95,7 +97,11 @@ public abstract class ReadonlyBaseDaoDynamo<T extends IDocument> implements IRea
     }
 
     private Index getIndex(String indexName) {
-        return dynamoDB.getTable(tableName).getIndex(indexName);
+        return getTable().getIndex(indexName);
+    }
+
+    private Table getTable() {
+        return dynamoDB.getTable(tableName);
     }
 
     private List<Item> extractFromItemCollection(ItemCollection<?> queryOutcome) {

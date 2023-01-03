@@ -10,9 +10,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.griddynamics.backoffice.model.IDocument;
 import com.griddynamics.car.enums.CarBodyStyle;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,15 +23,17 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Builder
 @Getter
 @Setter
+@EqualsAndHashCode
 @Document(collection = "orders")
 @DynamoDBTable(tableName = "orders")
 public class Order implements IDocument {
     @JsonIgnore
     @DynamoDBIgnore
-    public static final String userIdIndexName = "userId-index";
+    public static final String USER_ID_INDEX_NAME = "userId-index";
     @JsonProperty(value = "orderId")
     @DynamoDBHashKey(attributeName = "orderId")
     private String orderId;
+    //TODO: Proper DateTime formatting
 
     @JsonProperty(value = "startDateTimestamp")
     @DynamoDBAttribute(attributeName = "startDateTimestamp")
@@ -46,7 +48,7 @@ public class Order implements IDocument {
     private Double price;
 
     @JsonProperty(value = "userId")
-    @DynamoDBIndexHashKey(attributeName = "userId", globalSecondaryIndexName = userIdIndexName)
+    @DynamoDBIndexHashKey(attributeName = "userId", globalSecondaryIndexName = USER_ID_INDEX_NAME)
     private Long userId;
 
     @JsonProperty(value = "carId")

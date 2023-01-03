@@ -48,8 +48,6 @@ public class BackofficeControllerAdvice extends ResponseEntityExceptionHandler {
         return buildResponseEntity(serverError);
     }
 
-
-
     private ServerError buildServerError(BackofficeException e, WebRequest webRequest) {
         return buildServerError(e.getHttpStatus(), e, webRequest);
     }

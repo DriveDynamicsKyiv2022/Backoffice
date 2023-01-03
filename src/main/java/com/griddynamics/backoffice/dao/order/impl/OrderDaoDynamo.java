@@ -8,6 +8,7 @@ import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.griddynamics.backoffice.dao.ReadonlyBaseDaoDynamo;
 import com.griddynamics.backoffice.dao.order.IOrderDao;
+import com.griddynamics.backoffice.model.DynamoLogicalOperator;
 import com.griddynamics.backoffice.model.impl.Order;
 import com.griddynamics.backoffice.util.DynamoDbUtils;
 import com.griddynamics.request.AbstractOrderFilteringRequest;
@@ -45,7 +46,7 @@ public class OrderDaoDynamo extends ReadonlyBaseDaoDynamo<Order> implements IOrd
         if (!filterExpression.isEmpty()) {
             querySpec.withFilterExpression(filterExpression);
         }
-        return super.findByIndex(Order.userIdIndexName, pageable, index -> index.query(querySpec));
+        return super.findByIndex(Order.USER_ID_INDEX_NAME, pageable, index -> index.query(querySpec));
     }
 
     @Override
@@ -57,14 +58,14 @@ public class OrderDaoDynamo extends ReadonlyBaseDaoDynamo<Order> implements IOrd
             filterExpression = buildMultipleUsersFilterExpression(managerOrderRequest.getUserIds());
         }
         filterExpression = DynamoDbUtils.appendFilterExpression(filterExpression,
-                generateFilterExpressionAndFillValueMap(managerOrderRequest, valueMap), "AND");
+                generateFilterExpressionAndFillValueMap(managerOrderRequest, valueMap), DynamoLogicalOperator.AND);
         ScanSpec scanSpec = new ScanSpec();
         if (!filterExpression.isEmpty()) {
             scanSpec.withFilterExpression(filterExpression)
                     .withValueMap(valueMap);
         }
 
-        return super.findByIndex(Order.userIdIndexName, pageable, index -> index.scan(scanSpec));
+        return super.findByIndex(Order.USER_ID_INDEX_NAME, pageable, index -> index.scan(scanSpec));
     }
 
     private String buildMultipleUsersFilterExpression(List<Long> userIds) {
@@ -91,17 +92,17 @@ public class OrderDaoDynamo extends ReadonlyBaseDaoDynamo<Order> implements IOrd
         String filterExpression = Strings.EMPTY;
         if (orderRequest.getStartDate() != null) {
             filterExpression = DynamoDbUtils.appendFilterExpression(filterExpression, "startDateTimestamp >= :startDateTimestamp",
-                    "AND");
+                    DynamoLogicalOperator.AND);
             valueMap.withLong(":startDateTimestamp", orderRequest.getStartDate().atStartOfDay().toEpochSecond(ZoneOffset.UTC));
         }
         if (orderRequest.getEndDate() != null) {
             filterExpression = DynamoDbUtils.appendFilterExpression(filterExpression, "endDateTimestamp <= :endDateTimestamp",
-                    "AND");
+                    DynamoLogicalOperator.AND);
             valueMap.withLong(":endDateTimestamp", orderRequest.getEndDate().atStartOfDay().toEpochSecond(ZoneOffset.UTC));
         }
         if (orderRequest.getCarBodyStyle() != null) {
             filterExpression = DynamoDbUtils.appendFilterExpression(filterExpression, "carBodyStyle = :carBodyStyle",
-                    "AND");
+                    DynamoLogicalOperator.AND);
             valueMap.with(":carBodyStyle", orderRequest.getCarBodyStyle().name());
         }
         return filterExpression;

@@ -30,7 +30,7 @@ public class TariffController {
 
     @GetMapping
     public ResponseEntity<Page<TariffDto>> getTariffs(Integer pageNumber, Integer pageSize, UriComponentsBuilder uriComponentsBuilder) {
-        if (VariablesUtils.isNull(pageNumber, pageSize)) {
+        if (VariablesUtils.notAllSpecified(pageNumber, pageSize)) {
             throw new PaginationException("Page parameters must be specified");
         }
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
