@@ -3,7 +3,13 @@ package com.griddynamics.backoffice.dao.order.impl;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedScanList;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import com.amazonaws.services.dynamodbv2.document.Index;
+import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.ItemCollection;
+import com.amazonaws.services.dynamodbv2.document.QueryOutcome;
+import com.amazonaws.services.dynamodbv2.document.Table;
+import com.amazonaws.services.dynamodbv2.document.internal.PageIterable;
+import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.griddynamics.backoffice.TestingConstants;
 import com.griddynamics.backoffice.dao.ReadonlyBaseDaoDynamo;
@@ -121,11 +127,21 @@ class OrderDaoDynamoTest {
 
     @Test
     void testFindByIndex() {
+        Table tableMock = mock(Table.class);
+        Index indexMock = mock(Index.class);
+        PageIterable<Item, QueryOutcome> pagesMock = mock(PageIterable.class);
+        ItemCollection<QueryOutcome> itemCollectionMock = mock(ItemCollection.class);
+        QuerySpec querySpec = new QuerySpec();
+        when(dynamoDB.getTable(any())).thenReturn(tableMock);
+        when(tableMock.getIndex(any())).thenReturn(indexMock);
+        when(indexMock.query(querySpec)).thenReturn(itemCollectionMock);
+        when(itemCollectionMock.pages()).thenReturn(pagesMock);
 
     }
 
     @Test
     void getUserOrdersHistoryPaginated() {
+
     }
 
     @Test

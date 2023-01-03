@@ -104,9 +104,9 @@ public abstract class ReadonlyBaseDaoDynamo<T extends IDocument> implements IRea
         return dynamoDB.getTable(tableName);
     }
 
-    private List<Item> extractFromItemCollection(ItemCollection<?> queryOutcome) {
+    private List<Item> extractFromItemCollection(ItemCollection<?> itemCollection) {
         List<Item> items = new ArrayList<>();
-        for (com.amazonaws.services.dynamodbv2.document.Page<Item, ?> page : queryOutcome.pages()) {
+        for (com.amazonaws.services.dynamodbv2.document.Page<Item, ?> page : itemCollection.pages()) {
             items.addAll(extractFromPage(page));
         }
         return items;

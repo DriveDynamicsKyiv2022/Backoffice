@@ -36,12 +36,10 @@ public class Order implements IDocument {
     private String orderId;
 
     @JsonProperty(value = "startDateTimestamp")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     @DynamoDBAttribute(attributeName = "startDateTimestamp")
     private Long startDateTimestamp;
 
     @JsonProperty(value = "endDateTimestamp")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     @DynamoDBAttribute(attributeName = "endDateTimestamp")
     private Long endDateTimestamp;
 
