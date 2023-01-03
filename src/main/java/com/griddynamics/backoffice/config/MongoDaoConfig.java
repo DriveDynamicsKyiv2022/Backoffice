@@ -18,12 +18,12 @@ public class MongoDaoConfig {
         return new MongoTemplate(mongoClient(dbCredentials), dbCredentials.getDbName());
     }
 
-    public MongoClientSettings mongoClientSettings(DbCredentials credentials) {
-        ConnectionString connection = new ConnectionString(credentials.getUri());
-        return MongoClientSettings.builder().applyConnectionString(connection).build();
+    private MongoClient mongoClient(DbCredentials dbCredentials) {
+        return MongoClients.create(mongoClientSettings(dbCredentials));
     }
 
-    public MongoClient mongoClient(DbCredentials dbCredentials) {
-        return MongoClients.create(mongoClientSettings(dbCredentials));
+    private MongoClientSettings mongoClientSettings(DbCredentials credentials) {
+        ConnectionString connection = new ConnectionString(credentials.getUri());
+        return MongoClientSettings.builder().applyConnectionString(connection).build();
     }
 }

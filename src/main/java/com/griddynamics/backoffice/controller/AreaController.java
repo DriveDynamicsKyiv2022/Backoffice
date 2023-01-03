@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
-
+//TODO: Restful mapping
 @RestController
 @RequestMapping("/areas")
 public class AreaController {
@@ -30,7 +30,7 @@ public class AreaController {
 
     @GetMapping
     public ResponseEntity<Page<AreaDto>> getAreas(Integer pageNumber, Integer pageSize, UriComponentsBuilder uriComponentsBuilder) {
-        if (VariablesUtils.isNull(pageNumber, pageSize)) {
+        if (VariablesUtils.notAllSpecified(pageNumber, pageSize)) {
             throw new PaginationException("Page parameters must be specified");
         }
         Pageable pageable = PageRequest.of(pageNumber, pageSize);

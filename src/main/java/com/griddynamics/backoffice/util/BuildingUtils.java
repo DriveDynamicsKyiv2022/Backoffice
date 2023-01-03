@@ -8,8 +8,6 @@ import com.griddynamics.order.OrderDto;
 import com.griddynamics.tariff.TariffDto;
 import org.springframework.lang.Nullable;
 
-import java.util.UUID;
-
 public class BuildingUtils {
     public static TariffDto getDto(Tariff tariff) {
         return TariffDto.builder()
@@ -75,6 +73,6 @@ public class BuildingUtils {
     }
 
     private static String getOrGenerateId(@Nullable String id) {
-        return id == null ? UUID.randomUUID().toString() : id;
+        return id == null ? GeneratingUtils.generateId() : id;
     }
 }

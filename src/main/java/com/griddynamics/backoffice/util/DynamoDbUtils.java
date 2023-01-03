@@ -1,14 +1,21 @@
 package com.griddynamics.backoffice.util;
 
-public class DynamoDbUtils {
-    public static String appendFilterExpression(String filterExpression, String expressionToAppend, String logicalOperator) {
+import com.griddynamics.backoffice.model.DynamoLogicalOperator;
 
-        if (filterExpression == null || filterExpression.isEmpty()) {
+public class DynamoDbUtils {
+    public static String appendFilterExpression(String filterExpression, String expressionToAppend, DynamoLogicalOperator logicalOperator) {
+        if (VariablesUtils.stringIsNullOrEmpty(filterExpression) && VariablesUtils.stringIsNullOrEmpty(expressionToAppend)) {
+            throw new IllegalArgumentException("At least one part must be specified");
+        }
+        if (VariablesUtils.stringIsNullOrEmpty(filterExpression)) {
             return expressionToAppend;
         }
-        if (expressionToAppend == null || expressionToAppend.isEmpty()) {
+        if (VariablesUtils.stringIsNullOrEmpty(expressionToAppend)) {
             return filterExpression;
         }
-        return String.format("%s %s %s", filterExpression, logicalOperator, expressionToAppend);
+        if (logicalOperator == null) {
+            throw new IllegalArgumentException("Logical operator must be valid");
+        }
+        return String.format("%s %s %s", filterExpression, logicalOperator.name(), expressionToAppend);
     }
 }

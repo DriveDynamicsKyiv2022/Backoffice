@@ -26,6 +26,10 @@ public class SimpleOrderReadonlyService implements IOrderReadonlyService {
 
     @Override
     public Page<Order> getAllOrders(ManagerOrderFilteringRequest orderRequest, Pageable pageable) {
+        if (orderRequest.getEndDate() == null && orderRequest.getStartDate() == null &&
+                orderRequest.getCarBodyStyle() == null && orderRequest.getUserIds() == null) {
+            return orderDao.findAll(pageable);
+        }
         return orderDao.getAllOrdersPaginated(orderRequest, pageable);
     }
 }

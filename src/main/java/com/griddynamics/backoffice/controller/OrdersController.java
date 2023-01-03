@@ -44,7 +44,7 @@ public class OrdersController {
                                                            CarBodyStyle carBodyStyle,
                                                            UriComponentsBuilder uriComponentsBuilder,
                                                            Long... userIds) {
-        if (VariablesUtils.isNull(pageNumber, pageSize)) {
+        if (VariablesUtils.notAllSpecified(pageNumber, pageSize)) {
             throw new PaginationException("Page parameters must be specified");
         }
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
@@ -65,7 +65,7 @@ public class OrdersController {
                                                                @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
                                                                CarBodyStyle carBodyStyle, @PathVariable(name = "userId") long userId,
                                                                UriComponentsBuilder uriComponentsBuilder) {
-        if (VariablesUtils.isNull(pageNumber, pageSize)) {
+        if (VariablesUtils.notAllSpecified(pageNumber, pageSize)) {
             throw new PaginationException("Page parameters must be specified");
         }
         Pageable pageable = PageRequest.of(pageNumber, pageSize);

@@ -11,6 +11,7 @@ import com.griddynamics.car.enums.CarBodyStyle;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -22,6 +23,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Builder
 @Getter
 @Setter
+@EqualsAndHashCode
 @Document(collection = "tariffs")
 @DynamoDBTable(tableName = "tariffs")
 public class Tariff implements IDocument {
