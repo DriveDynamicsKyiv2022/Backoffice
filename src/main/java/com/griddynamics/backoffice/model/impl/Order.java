@@ -6,6 +6,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIgnore;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIndexHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConvertedEnum;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.griddynamics.backoffice.model.IDocument;
@@ -33,13 +34,14 @@ public class Order implements IDocument {
     @JsonProperty(value = "orderId")
     @DynamoDBHashKey(attributeName = "orderId")
     private String orderId;
-    //TODO: Proper DateTime formatting
 
     @JsonProperty(value = "startDateTimestamp")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     @DynamoDBAttribute(attributeName = "startDateTimestamp")
     private Long startDateTimestamp;
 
     @JsonProperty(value = "endDateTimestamp")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     @DynamoDBAttribute(attributeName = "endDateTimestamp")
     private Long endDateTimestamp;
 

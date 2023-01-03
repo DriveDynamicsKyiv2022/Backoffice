@@ -28,7 +28,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("orders")
+@RequestMapping
 public class OrdersController {
     private final IOrderReadonlyService orderReadonlyService;
 
@@ -37,7 +37,7 @@ public class OrdersController {
         this.orderReadonlyService = orderReadonlyService;
     }
 
-    @GetMapping
+    @GetMapping("orders")
     public ResponseEntity<Page<OrderDto>> getOrdersHistory(Integer pageNumber, Integer pageSize,
                                                            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
                                                            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
@@ -59,7 +59,7 @@ public class OrdersController {
         return new ResponseEntity<>(orderDtos, headers, HttpStatus.OK);
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("users/{userId}/orders")
     public ResponseEntity<Page<OrderDto>> getUserOrdersHistory(Integer pageNumber, Integer pageSize,
                                                                @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
                                                                @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
