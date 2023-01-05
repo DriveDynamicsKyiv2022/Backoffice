@@ -57,7 +57,7 @@ public class TariffController {
     @DeleteMapping("/{id}")
     public ResponseEntity<SimpleResponse> deleteTariff(@PathVariable String id) {
         tariffService.deleteTariff(id);
-        return new ResponseEntity<>(SimpleResponse.of("Area deleted"), HttpStatus.OK);
+        return new ResponseEntity<>(SimpleResponse.of("Tariff deleted"), HttpStatus.OK);
     }
 
     @PostMapping

@@ -25,6 +25,7 @@ public abstract class ReadWriteBaseDaoMongo<T extends IDocument> extends Readonl
     @Override
     public boolean delete(String id) {
         Query query = getSearchByIdQuery(id);
+        checkIfExistsOrThrowException(query);
         return mongoTemplate.remove(query, entityClass).wasAcknowledged();
     }
 
