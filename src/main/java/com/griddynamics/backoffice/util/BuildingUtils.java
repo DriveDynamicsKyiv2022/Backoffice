@@ -6,7 +6,6 @@ import com.griddynamics.backoffice.model.impl.Order;
 import com.griddynamics.backoffice.model.impl.Tariff;
 import com.griddynamics.order.OrderDto;
 import com.griddynamics.tariff.TariffDto;
-import org.springframework.lang.Nullable;
 
 public class BuildingUtils {
     public static TariffDto getDto(Tariff tariff) {
@@ -44,7 +43,7 @@ public class BuildingUtils {
 
 
     public static Tariff getEntity(TariffDto tariffDto) {
-        String tariffId = getOrGenerateId(tariffDto.getTariffId());
+        String tariffId = GeneratingUtils.generateId();
         return getEntity(tariffDto, tariffId);
     }
 
@@ -59,7 +58,7 @@ public class BuildingUtils {
     }
 
     public static Area getEntity(AreaDto areaDto) {
-        String areaId = getOrGenerateId(areaDto.getAreaId());
+        String areaId = GeneratingUtils.generateId();
         return getEntity(areaDto, areaId);
     }
 
@@ -70,9 +69,5 @@ public class BuildingUtils {
                 .city(areaDto.getCity())
                 .coordinates(areaDto.getCoordinates())
                 .build();
-    }
-
-    private static String getOrGenerateId(@Nullable String id) {
-        return id == null ? GeneratingUtils.generateId() : id;
     }
 }
