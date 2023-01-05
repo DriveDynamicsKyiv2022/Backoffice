@@ -43,6 +43,9 @@ public class BuildingUtils {
 
 
     public static Tariff getEntity(TariffDto tariffDto) {
+        if (tariffDto.getTariffId() != null) {
+            throw new IllegalArgumentException("Id must not be specified in this context");
+        }
         String tariffId = GeneratingUtils.generateId();
         return getEntity(tariffDto, tariffId);
     }
@@ -58,6 +61,9 @@ public class BuildingUtils {
     }
 
     public static Area getEntity(AreaDto areaDto) {
+        if (areaDto.getAreaId() != null) {
+            throw new IllegalArgumentException("Id must not be specified in this context");
+        }
         String areaId = GeneratingUtils.generateId();
         return getEntity(areaDto, areaId);
     }
