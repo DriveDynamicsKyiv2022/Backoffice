@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.griddynamics.backoffice.exception.PaginationException;
 import com.griddynamics.backoffice.exception.ResourceNotFoundException;
 import com.griddynamics.backoffice.model.IDocument;
+import com.griddynamics.backoffice.util.PaginationUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -55,7 +56,7 @@ public abstract class ReadonlyBaseDaoDynamo<T extends IDocument> implements IRea
                 .withLimit(pageable.getPageSize() * (pageable.getPageNumber() + 1))
                 .withConsistentRead(false);
         int totalCount = dynamoDBMapper.count(entityClass, DEFAULT_DYNAMODB_SCAN_EXPRESSION);
-        if (!isValidPage(totalCount, pageable)) {
+        if (!PaginationUtils.isValidPage(totalCount, pageable)) {
             throw new PaginationException("No such page");
         }
         PaginatedScanList<T> result = dynamoDBMapper.scan(entityClass, scanExpression);
@@ -79,17 +80,13 @@ public abstract class ReadonlyBaseDaoDynamo<T extends IDocument> implements IRea
         ItemCollection<?> itemCollection = itemCollectionFunction.apply(getIndex(indexName));
         List<Item> items = extractFromItemCollection(itemCollection);
         int accumulatedItemCount = itemCollection.getAccumulatedItemCount();
-        if (!isValidPage(accumulatedItemCount, pageable)) {
+        if (!PaginationUtils.isValidPage(accumulatedItemCount, pageable)) {
             throw new PaginationException("No such page");
         }
         List<T> entities = items.stream()
                 .filter(item -> isWithinPage(items.indexOf(item), pageable))
                 .map(this::extractFromItem).collect(Collectors.toList());
         return new PageImpl<>(entities, pageable, accumulatedItemCount);
-    }
-
-    private boolean isValidPage(int totalCount, Pageable pageable) {
-        return pageable.getPageNumber() * pageable.getPageSize() < totalCount;
     }
 
     private boolean isWithinPage(int index, Pageable pageable) {

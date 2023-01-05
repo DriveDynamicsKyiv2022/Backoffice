@@ -53,10 +53,10 @@ public class AreaController {
     public ResponseEntity<AreaDto> addArea(@RequestBody @Valid AreaDto areaDto, UriComponentsBuilder uriComponentsBuilder) {
         Area area = BuildingUtils.getEntity(areaDto);
         area = areaService.addArea(area);
-        AreaDto receivedArea = BuildingUtils.getDto(area);
-        URI responseUri = RestUtils.buildUri(uriComponentsBuilder, "area", receivedArea.getAreaId());
+        AreaDto receivedAreaDto = BuildingUtils.getDto(area);
+        URI responseUri = RestUtils.buildUri(uriComponentsBuilder, "area", receivedAreaDto.getAreaId());
         return ResponseEntity.created(responseUri)
-                .body(receivedArea);
+                .body(receivedAreaDto);
     }
 
     @GetMapping("/{id}")

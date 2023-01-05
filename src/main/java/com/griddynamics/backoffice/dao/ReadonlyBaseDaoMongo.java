@@ -4,6 +4,7 @@ import com.griddynamics.backoffice.exception.DatabaseException;
 import com.griddynamics.backoffice.exception.PaginationException;
 import com.griddynamics.backoffice.exception.ResourceNotFoundException;
 import com.griddynamics.backoffice.model.IDocument;
+import com.griddynamics.backoffice.util.PaginationUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -34,13 +35,12 @@ public abstract class ReadonlyBaseDaoMongo<T extends IDocument> implements IRead
     public Page<T> findAll(Pageable pageable) {
         Query query = new Query();
         long totalCount = getTotalCount(query);
-        query.with(pageable);
-        List<T> entities = mongoTemplate.find(query, entityClass);
-        Page<T> page = new PageImpl<>(entities, pageable, totalCount);
-        if (!validatePage(page)) {
+        if (!PaginationUtils.isValidPage(totalCount, pageable)) {
             throw new PaginationException("No such page");
         }
-        return page;
+        query.with(pageable);
+        List<T> entities = mongoTemplate.find(query, entityClass);
+        return new PageImpl<>(entities, pageable, totalCount);
     }
 
     @Override
@@ -54,7 +54,7 @@ public abstract class ReadonlyBaseDaoMongo<T extends IDocument> implements IRead
         return result;
     }
 
-    public long getTotalCount(Query query) {
+    protected long getTotalCount(Query query) {
         return mongoTemplate.count(query, entityClass);
     }
 
@@ -69,7 +69,4 @@ public abstract class ReadonlyBaseDaoMongo<T extends IDocument> implements IRead
         return new Query(Criteria.where(entityName + "Id").is(id));
     }
 
-    protected boolean validatePage(Page<?> page) {
-        return page.getTotalPages() - 1 > page.getPageable().getPageNumber();
-    }
 }

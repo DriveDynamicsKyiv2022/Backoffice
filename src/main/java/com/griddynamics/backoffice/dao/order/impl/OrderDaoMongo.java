@@ -5,6 +5,7 @@ import com.griddynamics.backoffice.dao.order.IOrderDao;
 import com.griddynamics.backoffice.exception.PaginationException;
 import com.griddynamics.backoffice.model.impl.Order;
 import com.griddynamics.backoffice.util.CollectionUtils;
+import com.griddynamics.backoffice.util.PaginationUtils;
 import com.griddynamics.request.AbstractOrderFilteringRequest;
 import com.griddynamics.request.ManagerOrderFilteringRequest;
 import com.griddynamics.request.UserOrderFilteringRequest;
@@ -32,13 +33,14 @@ public class OrderDaoMongo extends ReadonlyBaseDaoMongo<Order> implements IOrder
     public Page<Order> getUserOrdersHistoryPaginated(UserOrderFilteringRequest userOrderRequest, Pageable pageable) {
         Query query = new Query(Criteria.where("userId").is(userOrderRequest.getUserId()));
         Criteria criteria = configureCarAndDateCriteria(userOrderRequest);
-        query.with(pageable).addCriteria(criteria);
-        List<Order> orders = mongoTemplate.find(query, entityClass);
-        PageImpl<Order> page = new PageImpl<Order>(orders, pageable, getTotalCount(query));
-        if (!super.validatePage(page)) {
+        query.addCriteria(criteria);
+        long totalCount = getTotalCount(query);
+        if(!PaginationUtils.isValidPage(totalCount, pageable)) {
             throw new PaginationException("No such page");
         }
-        return page;
+        query.with(pageable);
+        List<Order> orders = mongoTemplate.find(query, entityClass);
+        return new PageImpl<>(orders, pageable, totalCount);
     }
 
     @Override
@@ -49,12 +51,13 @@ public class OrderDaoMongo extends ReadonlyBaseDaoMongo<Order> implements IOrder
         }
         Criteria carAndDateCriteria = configureCarAndDateCriteria(managerOrderRequest);
         query.addCriteria(carAndDateCriteria);
-        List<Order> orders = mongoTemplate.find(query, entityClass);
-        PageImpl<Order> page = new PageImpl<Order>(orders, pageable, getTotalCount(query));
-        if (!super.validatePage(page)) {
+        long totalCount = getTotalCount(query);
+        if(!PaginationUtils.isValidPage(totalCount, pageable)) {
             throw new PaginationException("No such page");
         }
-        return page;
+        query.with(pageable);
+        List<Order> orders = mongoTemplate.find(query, entityClass);
+        return new PageImpl<>(orders, pageable, totalCount);
     }
 
     protected Criteria configureCarAndDateCriteria(AbstractOrderFilteringRequest orderRequest) {
