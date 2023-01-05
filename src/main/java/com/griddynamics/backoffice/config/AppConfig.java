@@ -17,11 +17,10 @@ public class AppConfig {
     public ObjectMapper objectMapper() {
         JavaTimeModule javaTimeModule = new JavaTimeModule();
         LocalDateTimeDeserializer localDateTimeDeserializer = new
-                LocalDateTimeDeserializer(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                LocalDateTimeDeserializer(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
         javaTimeModule.addDeserializer(LocalDateTime.class, localDateTimeDeserializer);
         return Jackson2ObjectMapperBuilder.json()
                 .modules(javaTimeModule)
-                .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
                 .build();
     }
 }
