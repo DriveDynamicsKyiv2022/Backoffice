@@ -56,6 +56,9 @@ public abstract class ReadonlyBaseDaoDynamo<T extends IDocument> implements IRea
                 .withLimit(pageable.getPageSize() * (pageable.getPageNumber() + 1))
                 .withConsistentRead(false);
         int totalCount = dynamoDBMapper.count(entityClass, DEFAULT_DYNAMODB_SCAN_EXPRESSION);
+        if (totalCount == 0) {
+            throw new ResourceNotFoundException("No such " + entityName + "s");
+        }
         if (!PaginationUtils.isValidPage(totalCount, pageable)) {
             throw new PaginationException("No such page");
         }
@@ -80,6 +83,9 @@ public abstract class ReadonlyBaseDaoDynamo<T extends IDocument> implements IRea
         ItemCollection<?> itemCollection = itemCollectionFunction.apply(getIndex(indexName));
         List<Item> items = extractFromItemCollection(itemCollection);
         int accumulatedItemCount = itemCollection.getAccumulatedItemCount();
+        if (accumulatedItemCount == 0) {
+            throw new ResourceNotFoundException("No such " + entityName + "s");
+        }
         if (!PaginationUtils.isValidPage(accumulatedItemCount, pageable)) {
             throw new PaginationException("No such page");
         }
