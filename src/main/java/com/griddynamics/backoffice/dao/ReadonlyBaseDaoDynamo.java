@@ -57,7 +57,7 @@ public abstract class ReadonlyBaseDaoDynamo<T extends IDocument> implements IRea
                 .withConsistentRead(false);
         int totalCount = dynamoDBMapper.count(entityClass, DEFAULT_DYNAMODB_SCAN_EXPRESSION);
         if (totalCount == 0) {
-            throw new ResourceNotFoundException("No such " + entityName + "s");
+            throw new ResourceNotFoundException("No " + entityName + "s found");
         }
         if (!PaginationUtils.isValidPage(totalCount, pageable)) {
             throw new PaginationException("No such page");
