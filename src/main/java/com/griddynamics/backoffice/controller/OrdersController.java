@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -39,8 +40,8 @@ public class OrdersController {
 
     @GetMapping("orders")
     public ResponseEntity<Page<OrderDto>> getOrdersHistory(Integer pageNumber, Integer pageSize,
-                                                           @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
-                                                           @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+                                                           @DateTimeFormat(pattern = "yyyy-MM-dd") @Valid LocalDate startDate,
+                                                           @DateTimeFormat(pattern = "yyyy-MM-dd") @Valid LocalDate endDate,
                                                            CarBodyStyle carBodyStyle,
                                                            UriComponentsBuilder uriComponentsBuilder,
                                                            Long... userIds) {
