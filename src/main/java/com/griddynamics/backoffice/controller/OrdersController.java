@@ -50,7 +50,7 @@ public class OrdersController {
         }
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         ManagerOrderFilteringRequest orderFilteringRequest = ManagerOrderFilteringRequest.builder()
-                .userIds(userIds == null ? null : Arrays.stream(userIds).collect(Collectors.toList()))
+                .userIds(userIds == null || userIds.length == 0 ? null : Arrays.stream(userIds).collect(Collectors.toList()))
                 .carBodyStyle(carBodyStyle)
                 .startDate(startDate)
                 .endDate(endDate)
