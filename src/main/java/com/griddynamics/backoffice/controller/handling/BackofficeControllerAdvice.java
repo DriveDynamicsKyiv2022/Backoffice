@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.LocalDateTime;
@@ -32,6 +33,12 @@ public class BackofficeControllerAdvice extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = {DatabaseException.class, ResourceNotFoundException.class, PaginationException.class})
     protected ResponseEntity<Object> handleBackofficeException(BackofficeException e, WebRequest request) {
         ServerError serverError = buildServerError(e, request);
+        return buildResponseEntity(serverError);
+    }
+
+    @ExceptionHandler(value = {MethodArgumentTypeMismatchException.class})
+    protected ResponseEntity<Object> handleTypeMismatchException(RuntimeException runtimeException, WebRequest request) {
+        ServerError serverError = buildServerError(HttpStatus.BAD_REQUEST, runtimeException, request);
         return buildResponseEntity(serverError);
     }
 

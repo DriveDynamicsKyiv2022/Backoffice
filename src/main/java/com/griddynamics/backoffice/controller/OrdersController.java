@@ -40,8 +40,8 @@ public class OrdersController {
 
     @GetMapping("orders")
     public ResponseEntity<Page<OrderDto>> getOrdersHistory(Integer pageNumber, Integer pageSize,
-                                                           @DateTimeFormat(pattern = "yyyy-MM-dd") @Valid LocalDate startDate,
-                                                           @DateTimeFormat(pattern = "yyyy-MM-dd") @Valid LocalDate endDate,
+                                                           @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+                                                           @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
                                                            CarBodyStyle carBodyStyle,
                                                            UriComponentsBuilder uriComponentsBuilder,
                                                            Long... userIds) {
