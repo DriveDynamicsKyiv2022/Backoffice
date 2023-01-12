@@ -2,9 +2,9 @@ package com.griddynamics.backoffice.service.order.impl;
 
 import com.griddynamics.backoffice.dao.order.IOrderDao;
 import com.griddynamics.backoffice.model.impl.Order;
+import com.griddynamics.backoffice.model.request.ManagerOrderFilteringRequest;
+import com.griddynamics.backoffice.model.request.UserOrderFilteringRequest;
 import com.griddynamics.backoffice.service.order.IOrderReadonlyService;
-import com.griddynamics.request.ManagerOrderFilteringRequest;
-import com.griddynamics.request.UserOrderFilteringRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +27,7 @@ public class SimpleOrderReadonlyService implements IOrderReadonlyService {
     @Override
     public Page<Order> getAllOrders(ManagerOrderFilteringRequest orderRequest, Pageable pageable) {
         if (orderRequest.getEndDate() == null && orderRequest.getStartDate() == null &&
-                orderRequest.getCarBodyStyle() == null && orderRequest.getUserIds() == null) {
+                orderRequest.getCarBodyStyles() == null && orderRequest.getUserIds() == null) {
             return orderDao.findAll(pageable);
         }
         return orderDao.getAllOrdersPaginated(orderRequest, pageable);

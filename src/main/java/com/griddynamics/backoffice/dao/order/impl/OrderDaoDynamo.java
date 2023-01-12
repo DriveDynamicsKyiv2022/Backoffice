@@ -10,10 +10,10 @@ import com.griddynamics.backoffice.dao.ReadonlyBaseDaoDynamo;
 import com.griddynamics.backoffice.dao.order.IOrderDao;
 import com.griddynamics.backoffice.model.DynamoLogicalOperator;
 import com.griddynamics.backoffice.model.impl.Order;
+import com.griddynamics.backoffice.model.request.AbstractOrderFilteringRequest;
+import com.griddynamics.backoffice.model.request.ManagerOrderFilteringRequest;
+import com.griddynamics.backoffice.model.request.UserOrderFilteringRequest;
 import com.griddynamics.backoffice.util.DynamoDbUtils;
-import com.griddynamics.request.AbstractOrderFilteringRequest;
-import com.griddynamics.request.ManagerOrderFilteringRequest;
-import com.griddynamics.request.UserOrderFilteringRequest;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -22,7 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.time.ZoneOffset;
-import java.util.List;
+import java.util.Set;
 
 @Repository
 @Profile("!local")
@@ -54,8 +54,8 @@ public class OrderDaoDynamo extends ReadonlyBaseDaoDynamo<Order> implements IOrd
         ValueMap valueMap = new ValueMap();
         String filterExpression = Strings.EMPTY;
         if (managerOrderRequest.getUserIds() != null) {
-            valueMap = buildValueMap(managerOrderRequest.getUserIds());
-            filterExpression = buildMultipleUsersFilterExpression(managerOrderRequest.getUserIds());
+            valueMap = buildValueMap(managerOrderRequest.getUserIds(), "user");
+            filterExpression = buildMultipleValuesFilterExpression(managerOrderRequest.getUserIds(), "user", "userId");
         }
         filterExpression = DynamoDbUtils.appendFilterExpression(filterExpression,
                 generateFilterExpressionAndFillValueMap(managerOrderRequest, valueMap), DynamoLogicalOperator.AND);
@@ -68,18 +68,22 @@ public class OrderDaoDynamo extends ReadonlyBaseDaoDynamo<Order> implements IOrd
         return super.findByIndex(Order.USER_ID_INDEX_NAME, pageable, index -> index.scan(scanSpec));
     }
 
-    private String buildMultipleUsersFilterExpression(List<Long> userIds) {
+    private String buildMultipleValuesFilterExpression(Set<?> values, String valuesName, String attributeName) {
         StringBuilder builder = new StringBuilder();
-        for (Long id : userIds) {
-            builder.append(":user").append(id).append(",");
+        for (Object value : values) {
+            builder.append(":").append(valuesName).append(value).append(",");
         }
-        return "userId IN (" + builder.toString().substring(0, builder.length() - 1) + ")";
+        return attributeName + " IN (" + builder.toString().substring(0, builder.length() - 1) + ")";
     }
 
-    private ValueMap buildValueMap(List<Long> userIds) {
+    private ValueMap buildValueMap(Set<?> values, String valuesName) {
         ValueMap valueMap = new ValueMap();
-        for (Long id : userIds) {
-            valueMap.withNumber(":user" + id, id);
+        return appendValueMap(values, valuesName, valueMap);
+    }
+
+    private ValueMap appendValueMap(Set<?> values, String valuesName, ValueMap valueMap) {
+        for (Object value : values) {
+            valueMap.with(":" + valuesName + value, value);
         }
         return valueMap;
     }
@@ -100,10 +104,12 @@ public class OrderDaoDynamo extends ReadonlyBaseDaoDynamo<Order> implements IOrd
                     DynamoLogicalOperator.AND);
             valueMap.withLong(":endDateTimestamp", orderRequest.getEndDate().atStartOfDay().toEpochSecond(ZoneOffset.UTC));
         }
-        if (orderRequest.getCarBodyStyle() != null) {
-            filterExpression = DynamoDbUtils.appendFilterExpression(filterExpression, "carBodyStyle = :carBodyStyle",
+        if (orderRequest.getCarBodyStyles() != null) {
+            String multipleValuesFilterExpression = buildMultipleValuesFilterExpression(orderRequest.getCarBodyStyles(), "carBodyStyle",
+                    "carBodyStyle");
+            appendValueMap(orderRequest.getCarBodyStyles(), "carBodyStyle", valueMap);
+            filterExpression = DynamoDbUtils.appendFilterExpression(filterExpression, multipleValuesFilterExpression,
                     DynamoLogicalOperator.AND);
-            valueMap.with(":carBodyStyle", orderRequest.getCarBodyStyle().name());
         }
         return filterExpression;
     }

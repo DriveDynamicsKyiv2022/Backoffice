@@ -47,7 +47,7 @@ class OrdersControllerTest {
         when(uriComponents.toUriString()).thenReturn(null);
 
         var ordersHistory = ordersController
-                .getOrdersHistory(0, 2, null, null, null, uriComponentsBuilder);
+                .getOrdersHistory(0, 2, null, null, null, null, uriComponentsBuilder);
 
         var orderDtoPage = ordersHistory.getBody();
 

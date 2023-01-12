@@ -4,11 +4,11 @@ import com.griddynamics.backoffice.dao.ReadonlyBaseDaoMongo;
 import com.griddynamics.backoffice.dao.order.IOrderDao;
 import com.griddynamics.backoffice.exception.PaginationException;
 import com.griddynamics.backoffice.model.impl.Order;
+import com.griddynamics.backoffice.model.request.AbstractOrderFilteringRequest;
+import com.griddynamics.backoffice.model.request.ManagerOrderFilteringRequest;
+import com.griddynamics.backoffice.model.request.UserOrderFilteringRequest;
 import com.griddynamics.backoffice.util.CollectionUtils;
 import com.griddynamics.backoffice.util.PaginationUtils;
-import com.griddynamics.request.AbstractOrderFilteringRequest;
-import com.griddynamics.request.ManagerOrderFilteringRequest;
-import com.griddynamics.request.UserOrderFilteringRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
@@ -62,8 +62,8 @@ public class OrderDaoMongo extends ReadonlyBaseDaoMongo<Order> implements IOrder
 
     protected Criteria configureCarAndDateCriteria(AbstractOrderFilteringRequest orderRequest) {
         Criteria criteria = new Criteria();
-        if (orderRequest.getCarBodyStyle() != null) {
-            criteria = criteria.and("carBodyStyle").is(orderRequest.getCarBodyStyle());
+        if (orderRequest.getCarBodyStyles() != null) {
+            criteria = criteria.and("carBodyStyle").in(orderRequest.getCarBodyStyles());
         }
         if (orderRequest.getStartDate() != null) {
             criteria = criteria.and("startDate").gte(orderRequest.getStartDate());

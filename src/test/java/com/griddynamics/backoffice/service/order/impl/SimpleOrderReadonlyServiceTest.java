@@ -3,8 +3,8 @@ package com.griddynamics.backoffice.service.order.impl;
 import com.griddynamics.backoffice.TestingConstants;
 import com.griddynamics.backoffice.dao.order.IOrderDao;
 import com.griddynamics.backoffice.model.impl.Order;
-import com.griddynamics.request.ManagerOrderFilteringRequest;
-import com.griddynamics.request.UserOrderFilteringRequest;
+import com.griddynamics.backoffice.model.request.ManagerOrderFilteringRequest;
+import com.griddynamics.backoffice.model.request.UserOrderFilteringRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -51,7 +52,7 @@ class SimpleOrderReadonlyServiceTest {
         Pageable pageable = PageRequest.of(0, 2);
         Page<Order> expectedPage = new PageImpl<>(content, pageable, 4);
         ManagerOrderFilteringRequest managerOrderFilteringRequest = ManagerOrderFilteringRequest.builder()
-                .userIds(List.of(1L))
+                .userIds(Set.of(1L))
                 .build();
         when(orderDao.getAllOrdersPaginated(managerOrderFilteringRequest, pageable)).thenReturn(new PageImpl<>(content, pageable, 4));
 
