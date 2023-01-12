@@ -83,7 +83,7 @@ public class OrderDaoDynamo extends ReadonlyBaseDaoDynamo<Order> implements IOrd
 
     private ValueMap appendValueMap(Set<?> values, String valuesName, ValueMap valueMap) {
         for (Object value : values) {
-            valueMap.with(":" + valuesName + value, value);
+            valueMap.withString(":" + valuesName + value, value.toString());
         }
         return valueMap;
     }
