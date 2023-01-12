@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,8 +42,8 @@ public class OrdersController {
     public ResponseEntity<Page<OrderDto>> getOrdersHistory(Integer pageNumber, Integer pageSize,
                                                            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
                                                            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
-                                                           @RequestParam Set<CarBodyStyle> carBodyStyles,
-                                                           @RequestParam Set<Long> userIds,
+                                                           @RequestParam(name = "carBodyStyles") @Nullable Set<CarBodyStyle> carBodyStyles,
+                                                           @RequestParam(name = "userIds") @Nullable Set<Long> userIds,
                                                            UriComponentsBuilder uriComponentsBuilder) {
         if (VariablesUtils.notAllSpecified(pageNumber, pageSize)) {
             throw new PaginationException("Page parameters must be specified");
@@ -63,7 +64,7 @@ public class OrdersController {
     public ResponseEntity<Page<OrderDto>> getUserOrdersHistory(Integer pageNumber, Integer pageSize,
                                                                @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
                                                                @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
-                                                               @RequestParam Set<CarBodyStyle> carBodyStyles,
+                                                               @RequestParam(name = "carBodyStyles") @Nullable Set<CarBodyStyle> carBodyStyles,
                                                                @PathVariable(name = "userId") long userId,
                                                                UriComponentsBuilder uriComponentsBuilder) {
         if (VariablesUtils.notAllSpecified(pageNumber, pageSize)) {
