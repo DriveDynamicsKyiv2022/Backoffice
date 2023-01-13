@@ -25,7 +25,7 @@ import java.time.ZoneOffset;
 import java.util.Set;
 
 @Repository
-@Profile("!local")
+@Profile("local")
 public class OrderDaoDynamo extends ReadonlyBaseDaoDynamo<Order> implements IOrderDao {
 
     @Autowired
@@ -73,7 +73,7 @@ public class OrderDaoDynamo extends ReadonlyBaseDaoDynamo<Order> implements IOrd
         for (Object value : values) {
             builder.append(":").append(valuesName).append(value).append(",");
         }
-        return attributeName + " IN (" + builder.toString().substring(0, builder.length() - 1) + ")";
+        return attributeName + " IN (" + builder.substring(0, builder.length() - 1) + ")";
     }
 
     private ValueMap buildValueMap(Set<?> values, String valuesName) {
@@ -82,7 +82,14 @@ public class OrderDaoDynamo extends ReadonlyBaseDaoDynamo<Order> implements IOrd
     }
 
     private ValueMap appendValueMap(Set<?> values, String valuesName, ValueMap valueMap) {
+        if (valueMap == null) {
+            valueMap = new ValueMap();
+        }
         for (Object value : values) {
+            if (value instanceof Number) {
+                valueMap.withNumber(":" + valuesName + value, (Number) value);
+                continue;
+            }
             valueMap.withString(":" + valuesName + value, value.toString());
         }
         return valueMap;

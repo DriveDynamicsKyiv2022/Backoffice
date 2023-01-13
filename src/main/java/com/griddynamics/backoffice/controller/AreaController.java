@@ -54,7 +54,7 @@ public class AreaController {
         Area area = BuildingUtils.getEntity(areaDto);
         area = areaService.addArea(area);
         AreaDto receivedAreaDto = BuildingUtils.getDto(area);
-        URI responseUri = RestUtils.buildUri(uriComponentsBuilder, "area", receivedAreaDto.getAreaId());
+        URI responseUri = RestUtils.buildUri(uriComponentsBuilder, "areas", receivedAreaDto.getAreaId());
         return ResponseEntity.created(responseUri)
                 .body(receivedAreaDto);
     }

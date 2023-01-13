@@ -65,7 +65,7 @@ public class TariffController {
         Tariff tariff = BuildingUtils.getEntity(tariffDto);
         tariff = tariffService.addTariff(tariff);
         TariffDto dto = BuildingUtils.getDto(tariff);
-        URI uri = RestUtils.buildUri(uriComponentsBuilder, "tariff", tariff.getTariffId());
+        URI uri = RestUtils.buildUri(uriComponentsBuilder, "tariffs", tariff.getTariffId());
         return ResponseEntity.created(uri).body(dto);
     }
 
