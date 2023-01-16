@@ -8,4 +8,4 @@ services:
     restart: always
     image: backoffice_image
     ports:
-      - "8080"
+      - 3000:8080
