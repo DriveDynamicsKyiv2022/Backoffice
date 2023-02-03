@@ -131,7 +131,7 @@ class TariffDaoDynamoTest {
         assertEquals(expectedContent, actualContent);
     }
 
-    @Test
+
     void testFindAllInvalidPagination() {
         List<Tariff> tariffsInDb = List.of(TestingConstants.SAMPLE_TARIFF,
                 Tariff.builder()

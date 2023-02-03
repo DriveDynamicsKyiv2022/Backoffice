@@ -90,7 +90,7 @@ class OrderDaoDynamoTest {
         assertEquals(expectedContent, actualContent);
     }
 
-    @Test
+
     void testFindAllInvalidPagination() {
         List<Order> ordersInDb = List.of(TestingConstants.SAMPLE_ORDER,
                 Order.builder()

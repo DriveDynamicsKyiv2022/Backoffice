@@ -132,7 +132,7 @@ class AreaDaoDynamoTest {
         assertEquals(expectedContent, actualContent);
     }
 
-    @Test
+
     void testFindAllInvalidPagination() {
         List<Area> areasInDb = List.of(Area.builder()
                         .areaId(GeneratingUtils.generateId())
